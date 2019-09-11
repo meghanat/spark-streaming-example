@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.regex.Pattern;
-
 import scala.Tuple2;
 
 import org.apache.spark.SparkConf;
@@ -29,6 +28,7 @@ import org.apache.log4j.Level;
 public final class JavaNetworkWordCount {
   private static final Pattern SPACE = Pattern.compile(" ");
 
+
   public static void main(String[] args) throws Exception {
     if (args.length < 2) {
       System.err.println("Usage: JavaNetworkWordCount <hostname> <port>");
@@ -38,6 +38,12 @@ public final class JavaNetworkWordCount {
     // StreamingExamples.setStreamingLogLevels();
     Logger.getLogger("org").setLevel(Level.ERROR);
     Logger.getLogger("akka").setLevel(Level.ERROR);
+    HelloWorld h = new HelloWorld();
+    h.sayHi("JNI");
+    h.printPID();
+    h.printSchedType();
+    // h.setSchedType();
+    h.printSchedType();
 
     // Create the context with a 1 second batch size
     SparkConf sparkConf = new SparkConf().setAppName("JavaNetworkWordCount");
@@ -56,7 +62,13 @@ public final class JavaNetworkWordCount {
     JavaPairDStream<String, Integer> wordCounts = words.mapToPair(s -> new Tuple2<>(s, 1))
         .reduceByKey((i1, i2) -> i1 + i2);
 
-    wordCounts.print();
+    // wordCounts.print();
+    // wordCounts.saveAsTextFiles("/home/hduser/data/output/",".txt");
+     wordCounts.foreachRDD(rdd ->{
+      if(!rdd.isEmpty()){
+         rdd.coalesce(1).saveAsTextFile("/home/hduser/data/output/");
+      }
+    });
     ssc.start();
     ssc.awaitTermination();
   }
