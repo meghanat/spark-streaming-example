@@ -62,13 +62,13 @@ public final class JavaNetworkWordCount {
     JavaPairDStream<String, Integer> wordCounts = words.mapToPair(s -> new Tuple2<>(s, 1))
         .reduceByKey((i1, i2) -> i1 + i2);
 
-    // wordCounts.print();
-    // wordCounts.saveAsTextFiles("/home/hduser/data/output/",".txt");
-     wordCounts.foreachRDD(rdd ->{
-      if(!rdd.isEmpty()){
-         rdd.coalesce(1).saveAsTextFile("/home/hduser/data/output/");
-      }
-    });
+    wordCounts.print();
+    // // wordCounts.saveAsTextFiles("/home/hduser/data/output/",".txt");
+    //  wordCounts.foreachRDD(rdd ->{
+    //   if(!rdd.isEmpty()){
+    //      rdd.coalesce(1).saveAsTextFile("/home/hduser/data/output/");
+    //   }
+    // });
     ssc.start();
     ssc.awaitTermination();
   }
