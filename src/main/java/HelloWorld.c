@@ -105,27 +105,31 @@ JNIEXPORT void JNICALL Java_HelloWorld_printSchedType(JNIEnv *env, jobject obj)
 
 JNIEXPORT void JNICALL Java_HelloWorld_setSchedType(JNIEnv *env, jobject obj)
 {
+		printf("Here\n");
 		struct sched_attr attr;
 		unsigned int flags = 0;
 
 		attr.size = sizeof(attr);
-		attr.sched_flags = 0;
+		attr.sched_flags = SCHED_FLAG_RESET_ON_FORK;
 		attr.sched_nice = 0;
 		attr.sched_priority = 0;
 		attr.sched_policy = SCHED_DEADLINE;
-		attr.sched_runtime = 250*100*1000;
-		attr.sched_period = 300*100*1000;
-		attr.sched_deadline=300*100*1000;
+		attr.sched_runtime = 0.95*10*100*1000;
+		attr.sched_period = 10*100*1000;
+		attr.sched_deadline=10*100*1000;
+		printf("Here too\n");
 		if(sched_setattr(0, &attr, flags)!=0){
 			perror("Failed");	
 		}
-		int num,j;
-		for(j=0;j<100000000;)
-		{
-			num = 12/1822*4386384348/579849;
-			num = 12/1822*4386384348/579849;
-			num = 12/1822*4386384348/579849;
-		}
+		printf("Here three\n");
+		// printf("Scheduler changed");
+		// int num,j;
+		// for(j=0;j<100000000;)
+		// {
+		// 	num = 12/1822*4386384348/579849;
+		// 	num = 12/1822*4386384348/579849;
+		// 	num = 12/1822*4386384348/579849;
+		// }
 }
 JNIEXPORT void JNICALL Java_HelloWorld_sayHi
 (JNIEnv *env, jobject obj, jstring string) {
@@ -148,6 +152,17 @@ JNIEXPORT void JNICALL Java_HelloWorld_printPID
 // (*env)->ReleaseStringUTFChars(env, string, str);
 	 printf("%d\n",getpid());
    return;
+
+}
+JNIEXPORT jint JNICALL Java_HelloWorld_getPID
+(JNIEnv *env, jobject obj) {
+// const char *str = (*env)->GetStringUTFChars(env, string, 0);
+// char cap[128];
+// strcpy(cap, str);
+// printf(“Hello %s”, str);
+// (*env)->ReleaseStringUTFChars(env, string, str);
+	 // printf("%d\n",getpid());
+   return getpid();
 
 }
 JNIEXPORT void JNICALL Java_HelloWorld_cgroup_classify

@@ -7,6 +7,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef HelloWorld_MIN_PRIORITY
+#define HelloWorld_MIN_PRIORITY 1L
+#undef HelloWorld_NORM_PRIORITY
+#define HelloWorld_NORM_PRIORITY 5L
+#undef HelloWorld_MAX_PRIORITY
+#define HelloWorld_MAX_PRIORITY 10L
 /*
  * Class:     HelloWorld
  * Method:    sayHi
@@ -21,6 +27,14 @@ JNIEXPORT void JNICALL Java_HelloWorld_sayHi
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_HelloWorld_printPID
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     HelloWorld
+ * Method:    getPID
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_HelloWorld_getPID
   (JNIEnv *, jobject);
 
 /*
