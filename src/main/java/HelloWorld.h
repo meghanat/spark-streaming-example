@@ -31,6 +31,22 @@ JNIEXPORT void JNICALL Java_HelloWorld_printPID
 
 /*
  * Class:     HelloWorld
+ * Method:    sleep
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_HelloWorld_sleep
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     HelloWorld
+ * Method:    scheduleAll
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_HelloWorld_scheduleAll
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     HelloWorld
  * Method:    getPID
  * Signature: ()I
  */
@@ -51,6 +67,22 @@ JNIEXPORT void JNICALL Java_HelloWorld_printSchedType
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_HelloWorld_setSchedType
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     HelloWorld
+ * Method:    getchildPIDs
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_HelloWorld_getchildPIDs
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     HelloWorld
+ * Method:    getParentPIDs
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_HelloWorld_getParentPIDs
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

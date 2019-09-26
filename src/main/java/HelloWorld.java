@@ -13,6 +13,16 @@ class HelloWorld extends Thread implements Serializable
 		{	
 			System.loadLibrary("hello");
 		}
+		public native void sleep();
+		static
+		{	
+			System.loadLibrary("hello");
+		}
+		public native void scheduleAll();
+		static
+		{	
+			System.loadLibrary("hello");
+		}
 		public native int getPID();
 		static
 		{	
@@ -24,6 +34,16 @@ class HelloWorld extends Thread implements Serializable
 			System.loadLibrary("hello");
 		}
 		public native void setSchedType();
+		static
+		{
+			System.loadLibrary("hello");
+		}
+		public native void getchildPIDs();
+		static
+		{
+			System.loadLibrary("hello");
+		}
+		public native void getParentPIDs();
 		static
 		{
 			System.loadLibrary("hello");
@@ -47,14 +67,17 @@ public static void main(String[] args)
 {
 HelloWorld h = new HelloWorld();
 HelloWorld h1 = new HelloWorld();
-h.sayHi("JNI");
-h.printPID();
-System.out.println("Main Thread");
-h.printSchedType();
+// h.getchildPIDs();
+// h.getParentPIDs();
+h.scheduleAll();
+// h.sayHi("JNI");
+// h.printPID();
+// System.out.println("Main Thread");
+// h.printSchedType();
 
-// h.setSchedType();
-h.printSchedType();
-h.start();
-h1.start();
+// // h.setSchedType();
+// h.printSchedType();
+// h.start();
+// h1.start();
 }
 }
