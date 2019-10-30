@@ -1,52 +1,52 @@
 import java.io.Serializable;
 import java.lang.Thread;
-class HelloWorld extends Thread implements Serializable 
+class Deadline extends Thread implements Serializable 
 {
 		public native void sayHi(String name);
 		static
 		{
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 
 		public native void printPID();
 		static
 		{	
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native void sleep();
 		static
 		{	
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native void scheduleAll();
 		static
 		{	
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native int getPID();
 		static
 		{	
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native void printSchedType();
 		static
 		{
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native void setSchedType();
 		static
 		{
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native void getchildPIDs();
 		static
 		{
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public native void getParentPIDs();
 		static
 		{
-			System.loadLibrary("hello");
+			System.loadLibrary("deadline");
 		}
 		public void run()
 		{
@@ -65,11 +65,11 @@ class HelloWorld extends Thread implements Serializable
 
 public static void main(String[] args)
 {
-HelloWorld h = new HelloWorld();
-HelloWorld h1 = new HelloWorld();
+Deadline h = new Deadline();
+Deadline h1 = new Deadline();
 // h.getchildPIDs();
 // h.getParentPIDs();
-h.scheduleAll();
+// h.scheduleAll();
 // h.sayHi("JNI");
 // h.printPID();
 // System.out.println("Main Thread");

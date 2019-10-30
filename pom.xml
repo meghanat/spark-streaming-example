@@ -1,9 +1,9 @@
 <!--pom.xml-->
 <project>
   <groupId>org.apache.spark</groupId>
-  <artifactId>spark-sample</artifactId>
+  <artifactId>spark-real-time</artifactId>
   <modelVersion>4.0.0</modelVersion>
-  <name>JavaWordCount</name>
+  <name>JavaQueueWordCount</name>
   <packaging>jar</packaging>
   <version>0.0.1</version>
   <properties>

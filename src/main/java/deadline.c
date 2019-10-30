@@ -1,4 +1,4 @@
-#include "HelloWorld.h"
+#include "Deadline.h"
 #include<string.h>
 #include<stdio.h>
 #include<jni.h>
@@ -43,6 +43,7 @@
  #endif
 
  static volatile int done;
+ static int runtime=90;
 
  struct sched_attr {
 	__u32 size;
@@ -76,12 +77,12 @@
  {
 	return syscall(__NR_sched_getattr, pid, attr, size, flags);
  }
-JNIEXPORT void JNICALL Java_HelloWorld_sleep(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_Deadline_sleep(JNIEnv *env, jobject obj)
 {
 	sleep(1);
 }
 
-JNIEXPORT void JNICALL Java_HelloWorld_printSchedType(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_Deadline_printSchedType(JNIEnv *env, jobject obj)
 {
         int schedType;
 
@@ -107,7 +108,7 @@ JNIEXPORT void JNICALL Java_HelloWorld_printSchedType(JNIEnv *env, jobject obj)
 
 }
 
-JNIEXPORT void JNICALL Java_HelloWorld_setSchedType(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_Deadline_setSchedType(JNIEnv *env, jobject obj)
 {
 		// printf("Here\n");
 		struct sched_attr attr;
@@ -128,14 +129,14 @@ JNIEXPORT void JNICALL Java_HelloWorld_setSchedType(JNIEnv *env, jobject obj)
 
 }
 
-JNIEXPORT void JNICALL Java_HelloWorld_sayHi
+JNIEXPORT void JNICALL Java_Deadline_sayHi
 (JNIEnv *env, jobject obj, jstring string) {
 	 printf("Hello World!\n");
    return;
 
 }
 
-JNIEXPORT void JNICALL Java_HelloWorld_getchildPIDs(JNIEnv *env, jobject obj){
+JNIEXPORT void JNICALL Java_Deadline_getchildPIDs(JNIEnv *env, jobject obj){
 	FILE *fptr;
 	int pid=getpid();
 	char *line = NULL;
@@ -163,9 +164,9 @@ JNIEXPORT void JNICALL Java_HelloWorld_getchildPIDs(JNIEnv *env, jobject obj){
 				attr.sched_nice = 0;
 				attr.sched_priority = 0;
 				attr.sched_policy = SCHED_DEADLINE;
-				attr.sched_runtime = 60*100;
-				attr.sched_period = 100*100;
-				attr.sched_deadline= 100*100;
+				attr.sched_runtime = 60*1000*1000;
+				attr.sched_period = 100*1000*1000;
+				attr.sched_deadline= 100*1000*1000;
                
                
         		pid=strtol(line,NULL,10);
@@ -177,7 +178,7 @@ JNIEXPORT void JNICALL Java_HelloWorld_getchildPIDs(JNIEnv *env, jobject obj){
 
 }
 
-JNIEXPORT void JNICALL Java_HelloWorld_getParentPIDs(JNIEnv *env, jobject obj){
+JNIEXPORT void JNICALL Java_Deadline_getParentPIDs(JNIEnv *env, jobject obj){
 	FILE *fptr;
 	int pgid=getpgid(getpid());
 	char *line = NULL;
@@ -219,13 +220,13 @@ JNIEXPORT void JNICALL Java_HelloWorld_getParentPIDs(JNIEnv *env, jobject obj){
 
 }
 
-JNIEXPORT void JNICALL Java_HelloWorld_printPID
+JNIEXPORT void JNICALL Java_Deadline_printPID
 (JNIEnv *env, jobject obj) {
 	 printf("%d",getpid());
    return;
 
 }
-JNIEXPORT jint JNICALL Java_HelloWorld_getPID
+JNIEXPORT jint JNICALL Java_Deadline_getPID
 (JNIEnv *env, jobject obj) {
 // const char *str = (*env)->GetStringUTFChars(env, string, 0);
 // char cap[128];
@@ -236,13 +237,16 @@ JNIEXPORT jint JNICALL Java_HelloWorld_getPID
    return getpid();
 
 }
-JNIEXPORT void JNICALL Java_HelloWorld_cgroup_classify
+JNIEXPORT void JNICALL Java_Deadline_cgroup_classify
 (JNIEnv *env, jobject obj) {
-	
+	// char cpu_grp[100];
+	// sprintf(cpu_grp,"sudo cgclassify -g cpu:group_p %d\n",getpid());
+	// // printf("%s\n",cpu_grp);
+	// system(cpu_grp);
 }
 
 
-JNIEXPORT void JNICALL Java_HelloWorld_scheduleAll
+JNIEXPORT void JNICALL Java_Deadline_scheduleAll
 (JNIEnv *env, jobject obj) {
 	FILE *fptr;
 	char *line = NULL;
@@ -255,6 +259,7 @@ JNIEXPORT void JNICALL Java_HelloWorld_scheduleAll
         printf("Error! opening file");
         exit(1);         
     }
+    printf("Scheduling\n");
     while ((nread = getline(&line, &len, fptr)) != -1) {
                
                struct sched_attr attr;
@@ -266,15 +271,30 @@ JNIEXPORT void JNICALL Java_HelloWorld_scheduleAll
 				attr.sched_nice = 0;
 				attr.sched_priority = 0;
 				attr.sched_policy = SCHED_DEADLINE;
-				attr.sched_runtime = 60*100;
-				attr.sched_period = 100*100;
-				attr.sched_deadline= 100*100;
+				attr.sched_runtime = runtime*1000*1000;
+				attr.sched_period = 100*1000*1000;
+				attr.sched_deadline= runtime*1000*1000;
                
                
         		pid=strtol(line,NULL,10);
         		// printf("%d\n",pid );
-        		int ret=sched_setattr(pid, &attr, flags);
-        		// perror("Return");
+        		int ret;
+
+        		do{
+					 ret=sched_setattr(pid, &attr, flags);
+					 attr.sched_runtime-=10*1000*1000;
+					 
+					usleep(100000);
+					if(ret<0){
+						// perror("Scheduling");
+						printf("%d, %d\n",gettid(),attr.sched_runtime );
+					}
+				}
+				while(ret<0 && attr.sched_runtime>0);
+				if(attr.sched_runtime<=0 && runtime>10){
+					runtime=runtime-10;
+
+				}
 
            }
 
